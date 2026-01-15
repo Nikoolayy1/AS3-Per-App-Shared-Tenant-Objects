@@ -1,0 +1,42 @@
+{
+    "id": "per-app-declaration",
+    "schemaVersion": "3.55.0",
+    "controls": {
+        "class": "Controls",
+        "logLevel": "debug",
+        "trace": true
+    },
+         "A1": {
+            "class": "Application",
+            "service": {
+               "class": "Service_HTTP",
+               "virtualAddresses": [
+                  "10.0.2.10"
+               ],
+               "pool": "web_pool",
+                           "iRules": [
+                {
+                    "use": "/Example/Shared/Example_Response"
+                },
+                "insert_xff"
+            ]
+            },
+            "web_pool": {
+               "class": "Pool",
+               "monitors": [
+                  "http"
+               ],
+               "members": [{
+                  "servicePort": 80,
+                  "serverAddresses": [
+                     "192.7.1.10",
+                     "192.7.1.11"
+                  ]
+               }]
+            },
+                    "insert_xff": {
+            "class": "iRule",
+            "iRule": "when HTTP_REQUEST { HTTP::header insert X-Forwarded-For [IP::client_addr] }"
+        }
+         }
+      }
